@@ -178,3 +178,114 @@ func numSubarrayProductLessThanK(nums []int, k int) int {
 	}
 	return res
 }
+
+/*
+[560. 和为 K 的子数组](https://leetcode-cn.com/problems/subarray-sum-equals-k/)
+
+题目大意：输入一个整数数组和一个整数k，请问数组中有多少个数字之和等于k的连续子数组？
+例如，输入数组[1，1，1]，k的值为2，有2个连续子数组之和等于2。
+*/
+func subarraySum(nums []int, k int) int {
+	cnt := make(map[int]int)
+	count := 0
+	sum := 0
+
+	for _, num := range nums {
+		sum += num
+		if sum == k {
+			count++
+		}
+		count += cnt[sum-k]
+		cnt[sum]++
+	}
+	return count
+}
+
+/*
+[525. 连续数组](https://leetcode-cn.com/problems/contiguous-array/)
+
+题目大意：输入一个只包含0和1的数组，请问如何求0和1的个数相同的最长连续子数组的长度？
+例如，在数组[0，1，0]中有两个子数组包含相同个数的0和1，分别是[0，1]和[1，0]，它们的长度都是2，因此输出2。
+*/
+func findMaxLength(nums []int) int {
+	cnt := make(map[int]int)
+	maxLen := 0
+	sum := 0
+	for i := 0; i < len(nums); i++ {
+		if nums[i] == 0 {
+			sum--
+		} else {
+			sum++
+		}
+		if sum == 0 {
+			maxLen = max(i+1, maxLen)
+		}
+
+		if v, ok := cnt[sum]; ok {
+			maxLen = max(i-v, maxLen)
+		} else {
+			cnt[sum] = i
+		}
+	}
+	return maxLen
+}
+
+/*
+[724. 寻找数组的中心下标](https://leetcode-cn.com/problems/find-pivot-index/)
+
+题目大意：输入一个整数数组，如果一个数字左边的子数组的数字之和等于右边的子数组的数字之和，那么返回该数字的下标。如果存在多个这样的数字，则返回最左边一个数字的下标。如果不存在这样的数字，则返回-1。
+例如，在数组[1，7，3，6，2，9]中，下标为3的数字（值为6）的左边3个数字1、7、3的和与右边两个数字2和9的和相等，都是11，因此正确的输出值是3。
+*/
+func pivotIndex(nums []int) int {
+	left := 0
+	right := 0
+	for i := 0; i < len(nums); i++ {
+		right += nums[i]
+	}
+
+	for i := 0; i < len(nums); i++ {
+		right -= nums[i]
+		if left == right {
+			return i
+		}
+		left += nums[i]
+	}
+	return -1
+}
+
+/*
+[304. 二维区域和检索 - 矩阵不可变](https://leetcode-cn.com/problems/range-sum-query-2d-immutable/)
+
+题目大意：输入一个二维矩阵，如何计算给定左上角坐标和右下角坐标的子矩阵的数字之和？对于同一个二维矩阵，计算子矩阵的数字之和的函数可能由于输入不同的坐标而被反复调用多次。
+例如，输入图中的二维矩阵，以及左上角坐标为（2，1）和右下角坐标为（4，3）的子矩阵，该函数输出8。
+*/
+type NumMatrix struct {
+	sum [][]int
+}
+
+func Constructor(matrix [][]int) NumMatrix {
+	sum := make([][]int, len(matrix)+1)
+	sum[0] = make([]int, len(matrix[0])+1)
+	for i := 1; i < len(sum); i++ {
+		row := make([]int, len(matrix[0])+1)
+		rowSum := 0
+		for j := 1; j < len(row); j++ {
+			rowSum += matrix[i-1][j-1]
+			row[j] = rowSum + sum[i-1][j]
+		}
+		sum[i] = row
+	}
+	return NumMatrix{
+		sum: sum,
+	}
+}
+
+func (this *NumMatrix) SumRegion(row1 int, col1 int, row2 int, col2 int) int {
+	return this.sum[row2+1][col2+1] - this.sum[row1][col2+1] - this.sum[row2+1][col1] + this.sum[row1][col1]
+}
+
+/**
+ * Your NumMatrix object will be instantiated and called as such:
+ * obj := Constructor(matrix);
+ * param_1 := obj.SumRegion(row1,col1,row2,col2);
+ */

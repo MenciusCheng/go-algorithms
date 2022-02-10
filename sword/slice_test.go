@@ -174,3 +174,190 @@ func Test_numSubarrayProductLessThanK(t *testing.T) {
 		})
 	}
 }
+
+func Test_subarraySum(t *testing.T) {
+	type args struct {
+		nums []int
+		k    int
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{
+			args: args{
+				nums: []int{1, 1, 1},
+				k:    2,
+			},
+			want: 2,
+		},
+		{
+			args: args{
+				nums: []int{1, 2, 3},
+				k:    3,
+			},
+			want: 2,
+		},
+		{
+			args: args{
+				nums: []int{1, 9, 1},
+				k:    2,
+			},
+			want: 0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := subarraySum(tt.args.nums, tt.args.k); got != tt.want {
+				t.Errorf("subarraySum() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_findMaxLength(t *testing.T) {
+	type args struct {
+		nums []int
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{
+			args: args{
+				nums: []int{0, 1},
+			},
+			want: 2,
+		},
+		{
+			args: args{
+				nums: []int{0, 1, 0},
+			},
+			want: 2,
+		},
+		{
+			args: args{
+				nums: []int{0, 1, 1},
+			},
+			want: 2,
+		},
+		{
+			args: args{
+				nums: []int{0, 0, 1, 0, 0, 0, 1, 1},
+			},
+			want: 6,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := findMaxLength(tt.args.nums); got != tt.want {
+				t.Errorf("findMaxLength() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_pivotIndex(t *testing.T) {
+	type args struct {
+		nums []int
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{
+			args: args{
+				nums: []int{1, 7, 3, 6, 5, 6},
+			},
+			want: 3,
+		},
+		{
+			args: args{
+				nums: []int{1, 2, 3},
+			},
+			want: -1,
+		},
+		{
+			args: args{
+				nums: []int{2, 1, -1},
+			},
+			want: 0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := pivotIndex(tt.args.nums); got != tt.want {
+				t.Errorf("pivotIndex() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNumMatrix_SumRegion(t *testing.T) {
+	/*
+		输入:
+		["NumMatrix","sumRegion","sumRegion","sumRegion"]
+		[[[[3,0,1,4,2],[5,6,3,2,1],[1,2,0,1,5],[4,1,0,1,7],[1,0,3,0,5]]],[2,1,4,3],[1,1,2,2],[1,2,2,4]]
+		输出:
+		[null, 8, 11, 12]
+
+		解释:
+		NumMatrix numMatrix = new NumMatrix([[3,0,1,4,2],[5,6,3,2,1],[1,2,0,1,5],[4,1,0,1,7],[1,0,3,0,5]]);
+		numMatrix.sumRegion(2, 1, 4, 3); // return 8 (红色矩形框的元素总和)
+		numMatrix.sumRegion(1, 1, 2, 2); // return 11 (绿色矩形框的元素总和)
+		numMatrix.sumRegion(1, 2, 2, 4); // return 12 (蓝色矩形框的元素总和)
+	*/
+	m := Constructor([][]int{
+		{3, 0, 1, 4, 2}, {5, 6, 3, 2, 1}, {1, 2, 0, 1, 5}, {4, 1, 0, 1, 7}, {1, 0, 3, 0, 5},
+	})
+
+	type args struct {
+		row1 int
+		col1 int
+		row2 int
+		col2 int
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{
+			args: args{
+				row1: 2,
+				col1: 1,
+				row2: 4,
+				col2: 3,
+			},
+			want: 8,
+		},
+		{
+			args: args{
+				row1: 1,
+				col1: 1,
+				row2: 2,
+				col2: 2,
+			},
+			want: 11,
+		},
+		{
+			args: args{
+				row1: 1,
+				col1: 2,
+				row2: 2,
+				col2: 4,
+			},
+			want: 12,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := m.SumRegion(tt.args.row1, tt.args.col1, tt.args.row2, tt.args.col2); got != tt.want {
+				t.Errorf("SumRegion() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
